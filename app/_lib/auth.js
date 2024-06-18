@@ -7,8 +7,6 @@ const authConfig = {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      authorizationUrl:
-        "https://accounts.google.com/o/oauth2/auth?response_type=code",
     }),
   ],
   callbacks: {
