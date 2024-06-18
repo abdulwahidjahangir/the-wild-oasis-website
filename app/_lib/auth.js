@@ -7,6 +7,8 @@ const authConfig = {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      authorizationUrl:
+        "https://accounts.google.com/o/oauth2/auth?response_type=code",
     }),
   ],
   callbacks: {
@@ -15,12 +17,15 @@ const authConfig = {
     },
     async signIn({ user, account, profile }) {
       try {
-        const existingGuest = await getGuest(user.email);
+        if (account.provider === "google") {
+          const existingGuest = await getGuest(user.email);
 
-        if (!existingGuest)
-          await createGuest({ email: user.email, fullName: user.name });
+          if (!existingGuest)
+            await createGuest({ email: user.email, fullName: user.name });
 
-        return true;
+          return true;
+        }
+        return false;
       } catch (error) {
         return false;
       }
@@ -30,6 +35,7 @@ const authConfig = {
       session.user.guestId = guest.id;
       return session;
     },
+    debug: true,
   },
   pages: {
     signIn: "/login",
